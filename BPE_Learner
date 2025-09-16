@@ -1,5 +1,7 @@
+from collections import defaultdict
+
+# Step 1: Learn BPE merges from toy corpus
 corpus = ["low", "lowest", "newer", "new"]
-from collections import defaultdict, Counter
 
 def get_vocab(corpus):
     vocab = defaultdict(int)
@@ -25,16 +27,42 @@ def merge_vocab(pair, vocab):
         new_vocab[new_word] = vocab[word]
     return new_vocab
 
-# Initialize
+# Learn merges
 vocab = get_vocab(corpus)
-num_merges = 10
+num_merges = 30
+merges = []
 
-print("Initial Vocabulary Size:", len(vocab))
+print("📘 Learning BPE merges:")
 for i in range(num_merges):
     pairs = get_stats(vocab)
     if not pairs:
         break
     best = max(pairs, key=pairs.get)
-    print(f"Step {i+1}: Best pair to merge: {best}")
+    merges.append(best)
+    print(f"Step {i+1}: Merge {best} → {''.join(best)}")
     vocab = merge_vocab(best, vocab)
-    print(f"Vocabulary Size after merge {i+1}: {len(vocab)}")
+    print(f"Vocabulary size: {len(vocab)}")
+
+# Step 2: Segment words using learned merges
+def apply_bpe(word, merges):
+    tokens = list(word) + ['</w>']
+    merge_dict = {pair: ''.join(pair) for pair in merges}
+    while True:
+        pairs = [(tokens[i], tokens[i+1]) for i in range(len(tokens)-1)]
+        merge_found = False
+        for pair in pairs:
+            if pair in merge_dict:
+                idx = pairs.index(pair)
+                tokens = tokens[:idx] + [merge_dict[pair]] + tokens[idx+2:]
+                merge_found = True
+                break
+        if not merge_found:
+            break
+    return [t + '_' if t != '</w>' else t for t in tokens]
+
+# Segment words
+test_words = ["new", "newer", "lowest", "widest", "newestest"]
+print("\n✂️ Segmenting words:")
+for word in test_words:
+    segmented = apply_bpe(word, merges)
+    print(f"{word} → {' '.join(segmented)}")
