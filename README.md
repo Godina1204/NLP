@@ -45,16 +45,16 @@ input : low low low low low lowest lowest newer newer newer newer newer newer wi
 Enter number of merges to learn (default 10): 3
 ```
 
-input : Machine learning models are transforming industries. Deep learning techniques enable computers to recognize patterns in images, text, and audio. Subword tokenization improves performance for rare and unseen words, making NLP applications more robust and efficient.
+input : తెలుగు ఒక ప్రాచీన భాష. ఇది దక్షిణ భారతదేశంలో విస్తరించి ఉంది. తెలుగు సాహిత్యం గొప్ప సంపదను కలిగి ఉంది. ఈ భాషలో అనేక కవులు, రచయితలు ఉన్నారు. వారి రచనలు ప్రపంచవ్యాప్తంగా గుర్తింపు పొందాయి.
 
 Enter number of merges to learn (default 30): 20
 
 Enter : 
-learning
-techniques
-applications
-performance
-robust
+తెలుగు
+భాష
+సాహిత్యం
+రచయితలు
+ప్రపంచ
 
 
 # Word pair
