@@ -1,0 +1,60 @@
+from collections import Counter, defaultdict
+
+# Toy corpus
+corpus = [
+    "low", "low", "low", "low", "low",
+    "lowest", "lowest",
+    "newer", "newer", "newer", "newer", "newer", "newer",
+    "wider", "wider", "wider",
+    "new", "new"
+]
+
+# Step 1: Add end-of-word marker
+corpus = [list(word) + ['_'] for word in corpus]
+
+# Flatten corpus for bigram counting
+def get_bigrams(corpus):
+    bigram_counts = Counter()
+    for word in corpus:
+        for i in range(len(word)-1):
+            bigram = (word[i], word[i+1])
+            bigram_counts[bigram] += 1
+    return bigram_counts
+
+# Step 2: Perform BPE merges
+def bpe_merge(corpus, num_merges=3):
+    vocab = set(char for word in corpus for char in word)
+    for merge_step in range(num_merges):
+        bigram_counts = get_bigrams(corpus)
+        if not bigram_counts:
+            break
+        # Find the most frequent bigram
+        most_freq_bigram = bigram_counts.most_common(1)[0][0]
+        new_token = ''.join(most_freq_bigram)
+        print(f"Step {merge_step+1}: Merging {most_freq_bigram} -> '{new_token}'")
+
+        # Update the corpus
+        new_corpus = []
+        for word in corpus:
+            i = 0
+            new_word = []
+            while i < len(word):
+                # Merge if the bigram matches
+                if i < len(word)-1 and (word[i], word[i+1]) == most_freq_bigram:
+                    new_word.append(new_token)
+                    i += 2
+                else:
+                    new_word.append(word[i])
+                    i += 1
+            new_corpus.append(new_word)
+        corpus = new_corpus
+
+        # Update vocabulary
+        vocab.add(new_token)
+        print("Updated vocabulary:", vocab)
+        # Optional: show first 2 words as snippet
+        print("Corpus snippet:", [''.join(w) for w in corpus[:2]], "\n")
+    return corpus, vocab
+
+# Run BPE
+final_corpus, final_vocab = bpe_merge(corpus, num_merges=3)
