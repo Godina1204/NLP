@@ -7,7 +7,7 @@ This Repo includes:
 700769576**
 ---
 
-# Tokenizer Example
+# Tokenization Example
 ### 1️⃣ Install & Download Model
 
 pip install spacy
