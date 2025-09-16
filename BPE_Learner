@@ -1,0 +1,40 @@
+corpus = ["low", "lowest", "newer", "new"]
+from collections import defaultdict, Counter
+
+def get_vocab(corpus):
+    vocab = defaultdict(int)
+    for word in corpus:
+        tokens = list(word) + ['</w>']
+        vocab[' '.join(tokens)] += 1
+    return vocab
+
+def get_stats(vocab):
+    pairs = defaultdict(int)
+    for word, freq in vocab.items():
+        symbols = word.split()
+        for i in range(len(symbols)-1):
+            pairs[(symbols[i], symbols[i+1])] += freq
+    return pairs
+
+def merge_vocab(pair, vocab):
+    new_vocab = {}
+    bigram = ' '.join(pair)
+    replacement = ''.join(pair)
+    for word in vocab:
+        new_word = word.replace(bigram, replacement)
+        new_vocab[new_word] = vocab[word]
+    return new_vocab
+
+# Initialize
+vocab = get_vocab(corpus)
+num_merges = 10
+
+print("Initial Vocabulary Size:", len(vocab))
+for i in range(num_merges):
+    pairs = get_stats(vocab)
+    if not pairs:
+        break
+    best = max(pairs, key=pairs.get)
+    print(f"Step {i+1}: Best pair to merge: {best}")
+    vocab = merge_vocab(best, vocab)
+    print(f"Vocabulary Size after merge {i+1}: {len(vocab)}")
